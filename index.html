@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SMILEZGERMZ // PREMIUM_MARKETPLACE</title>
+    <style>
+        :root {
+            --void: #05010a;
+            --neon-green: #39ff14;
+            --glass: rgba(10, 2, 20, 0.95);
+            --border: rgba(57, 255, 20, 0.4);
+            --gold: #ffd700;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', Courier, monospace; }
+        body { background: var(--void); color: var(--neon-green); overflow: hidden; height: 100vh; width: 100vw; touch-action: none; }
+        #gl-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        
+        #ui-layer { 
+            position: relative; z-index: 10; height: 100%; width: 100%; 
+            pointer-events: none; display: flex; flex-direction: column; 
+            justify-content: space-between; padding: 2rem;
+        }
+        
+        .control-panel { pointer-events: auto; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+        
+        button {
+            background: rgba(0,0,0,0.8); border: 1px solid var(--neon-green);
+            color: var(--neon-green); padding: 1rem 2rem; font-size: 0.9rem;
+            cursor: pointer; transition: all 0.3s; text-shadow: 0 0 10px var(--neon-green);
+            text-transform: uppercase; letter-spacing: 2px;
+        }
+
+        button:hover { background: var(--neon-green); color: var(--void); }
+
+        #audio-switcher { width: 100%; display: flex; gap: 0.5rem; justify-content: center; pointer-events: auto; flex-wrap: wrap; }
+        #audio-switcher button { font-size: 0.6rem; padding: 0.4rem 0.8rem; opacity: 0.5; border-color: var(--border); }
+        #audio-switcher button.active { opacity: 1; border-color: var(--neon-green); box-shadow: 0 0 15px var(--neon-green); }
+
+        #store-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 20;
+            background: var(--glass); backdrop-filter: blur(30px);
+            display: flex; flex-direction: column; padding: 2rem; transition: opacity 0.5s;
+        }
+
+        .app-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; flex-grow: 1; overflow-y: auto; padding: 2rem 0; }
+        .app-card { border: 1px solid var(--border); padding: 1.5rem; display: flex; flex-direction: column; align-items: center; text-align: center; background: rgba(57, 255, 20, 0.02); transition: 0.3s; }
+        .app-card:hover { border-color: var(--neon-green); background: rgba(57, 255, 20, 0.05); transform: translateY(-5px); }
+
+        .app-title { font-size: 1.1rem; margin-bottom: 0.5rem; letter-spacing: 2px; }
+        .app-desc { font-size: 0.6rem; opacity: 0.7; margin-bottom: 1.5rem; line-height: 1.4; }
+
+        .buy-btn { border-color: var(--gold); color: var(--gold); text-shadow: 0 0 5px var(--gold); margin-top: auto; font-size: 0.7rem; padding: 0.6rem 1rem; }
+        .buy-btn:hover { background: var(--gold); color: var(--void); }
+
+        #status-bar { position: fixed; top: 1rem; right: 1rem; z-index: 100; font-size: 0.6rem; color: var(--neon-green); opacity: 0.6; pointer-events: none; }
+        .hidden { display: none !important; }
+        input[type="file"] { display: none; }
+
+        @keyframes glitch-flash {
+            0% { background: var(--gold); }
+            100% { background: transparent; }
+        }
+        .purchasing { animation: glitch-flash 0.2s infinite; }
+    </style>
+</head>
+<body>
+    <div id="status-bar">SMILEZGERMZ // MARKETPLACE_V1 // ENCRYPTED</div>
+    <canvas id="gl-canvas"></canvas>
+
+    <div id="ui-layer">
+        <div class="control-panel">
+            <button id="feed-void">FEED_THE_VOID</button>
+            <button id="open-store">ACCESS_MARKET</button>
+        </div>
+        <div id="audio-switcher"></div>
+    </div>
+
+    <input type="file" id="file-input" multiple accept="audio/*">
+
+    <div id="store-overlay" class="hidden">
+        <h1 style="border-bottom: 2px solid var(--neon-green); padding-bottom: 1rem; letter-spacing: 5px;">SMILEZGERMZ // PREMIUM_REPOSITORY</h1>
+        <div class="app-grid">
+            <div class="app-card">
+                <div class="app-title">VORTEX.apk</div>
+                <p class="app-desc">SINGULARITY WARPER. PREMIUM SHADOW-WARP PALETTE UNLOCKED. DUAL-FINGER VOID TWISTING ENGINE.</p>
+                <button class="buy-btn" data-link="https://buy.stripe.com/VORTEX_LINK">PURCHASE // $9.99</button>
+            </div>
+            <div class="app-card">
+                <div class="app-title">MIASMA.apk</div>
+                <p class="app-desc">AR REALITY PARASITE. TOXIC-GOLD MUTATION ENGINE ACTIVE. INFEST YOUR PHYSICAL ROOM THROUGH CAMERA.</p>
+                <button class="buy-btn" data-link="https://buy.stripe.com/MIASMA_LINK">PURCHASE // $12.50</button>
+            </div>
+            <div class="app-card">
+                <div class="app-title">NECRO.apk</div>
+                <p class="app-desc">SIGNAL REANIMATOR. REAL-TIME GRANULAR GHOST ECHOES. TRAP AND LOOP SYSTEM AUDIO SIGNALS.</p>
+                <button class="buy-btn" data-link="https://buy.stripe.com/NECRO_LINK">PURCHASE // $15.00</button>
+            </div>
+            <div class="app-card">
+                <div class="app-title">SPASM.apk</div>
+                <p class="app-desc">RHYTHMIC SHREDDER. CHROMATIC DISPLACEMENT ENGINE. VIOLENT DIGITAL TEARING SYNCED TO BASS.</p>
+                <button class="buy-btn" data-link="https://buy.stripe.com/SPASM_LINK">PURCHASE // $7.99</button>
+            </div>
+            <div class="app-card">
+                <div class="app-title">GHOST.apk</div>
+                <p class="app-desc">ENCRYPTED VOID. STEGANOGRAPHY MESSAGE DECODER. HIDE SECRET SIGNALS IN THE EVP NOISE FLOOR.</p>
+                <button class="buy-btn" data-link="https://buy.stripe.com/GHOST_LINK">PURCHASE // $19.99</button>
+            </div>
+        </div>
+        <button id="close-store" style="margin-top: 1.5rem; align-self: center;">X_RETURN_TO_VOID</button>
+    </div>
+
+    <script id="fs" type="x-shader/x-fragment">
+precision highp float;
+uniform float u_time;
+uniform vec2 u_resolution;
+uniform float u_bass;
+uniform float u_mids;
+uniform float u_highs;
+uniform float u_glitch; 
+uniform float u_touch_dist;   
+uniform float u_touch_angle;  
+
+#define ITERATIONS 10
+
+float hash(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
+vec2 rotate(vec2 v, float a) {
+    float s = sin(a); float c = cos(a);
+    return vec2(v.x * c - v.y * s, v.x * s + v.y * c);
+}
+
+void main() {
+    vec2 p = (gl_FragCoord.xy - 0.5 * u_resolution.xy) / min(u_resolution.y, u_resolution.x);
+    float d = length(p);
+    float vortex = u_touch_angle * 7.0 * exp(-d * 3.5);
+    p = rotate(p, vortex + u_time * 0.15);
+
+    float mut_scale = 1.7 + u_touch_dist * 0.7 + u_bass * 0.6;
+    float morph = smoothstep(0.2, 0.8, u_touch_dist);
+    
+    if (u_glitch > 0.85) p.x += hash(vec2(p.y, u_time)) * 0.08;
+
+    float ang = u_time * 0.05 + u_mids * 0.3;
+    for(int i = 0; i < ITERATIONS; i++) {
+        p = abs(p);
+        if (p.x < p.y) p.yx = p.xy;
+        p *= mut_scale;
+        p -= vec2(0.5, 0.8) * (1.0 + u_highs * 0.25);
+        p = rotate(p, ang + morph * sin(u_time * 0.4 + float(i)*0.1));
+    }
+
+    float dist = length(p) * exp(-length(p * 0.15));
+    vec3 void_p = vec3(0.04, 0.0, 0.08);
+    vec3 neon_g = mix(vec3(0.2, 1.0, 0.3), vec3(0.1, 0.8, 1.0), morph);
+    
+    vec3 col = mix(void_p, neon_g, smoothstep(0.1, 0.0, abs(sin(dist + u_time))));
+    col += neon_g * ((0.02 + u_glitch * 0.06) / abs(sin(dist * 1.6 + u_time)));
+    
+    col *= 0.92 + 0.08 * sin(gl_FragCoord.y * 2.5);
+    col *= 1.0 - dot(p*0.01, p*0.01);
+    gl_FragColor = vec4(col, 1.0);
+}
+    </script>
+
+    <script>
+        class SmilezGermz {
+            constructor() {
+                this.canvas = document.getElementById('gl-canvas');
+                this.gl = this.canvas.getContext('webgl', { antialias: true });
+                this.audioCtx = null; this.analyser = null; this.tracks = [];
+                this.uniforms = { time: 0, resolution: [0, 0], bass: 0, mids: 0, highs: 0, glitch: 0, touch_dist: 0.5, touch_angle: 0 };
+                this.initialDist = 0; this.initialAngle = 0; this.baseDist = 0.5; this.baseAngle = 0;
+                this.init();
+            }
+
+            init() {
+                this.resize(); window.addEventListener('resize', () => this.resize());
+                
+                this.canvas.addEventListener('touchstart', (e) => {
+                    if (e.touches.length === 2) {
+                        this.initialDist = this.getDist(e.touches[0], e.touches[1]);
+                        this.initialAngle = this.getAngle(e.touches[0], e.touches[1]);
+                        this.baseDist = this.uniforms.touch_dist;
+                        this.baseAngle = this.uniforms.touch_angle;
+                    }
+                }, { passive: false });
+
+                this.canvas.addEventListener('touchmove', (e) => {
+                    if (e.touches.length === 2) {
+                        e.preventDefault();
+                        const d = this.getDist(e.touches[0], e.touches[1]);
+                        this.uniforms.touch_dist = Math.max(0.1, Math.min(2.0, this.baseDist + (d - this.initialDist) * 0.005));
+                        const a = this.getAngle(e.touches[0], e.touches[1]);
+                        this.uniforms.touch_angle = this.baseAngle + (a - this.initialAngle);
+                    }
+                }, { passive: false });
+
+                document.getElementById('open-store').onclick = () => document.getElementById('store-overlay').classList.remove('hidden');
+                document.getElementById('close-store').onclick = () => document.getElementById('store-overlay').classList.add('hidden');
+                
+                document.querySelectorAll('.buy-btn').forEach(btn => {
+                    btn.onclick = (e) => {
+                        const link = e.target.getAttribute('data-link');
+                        if (link && link.includes('stripe.com') && !link.includes('_LINK')) {
+                            e.target.classList.add('purchasing');
+                            e.target.textContent = "DECRYPTING_GATEWAY...";
+                            setTimeout(() => { window.location.href = link; }, 800);
+                        } else {
+                            alert("VOID_ERROR: STRIPE_LINK_NOT_CONFIGURED. EDIT INDEX.HTML TO ADD YOUR URLS.");
+                        }
+                    };
+                });
+
+                const fInput = document.getElementById('file-input');
+                document.getElementById('feed-void').onclick = () => fInput.click();
+                fInput.onchange = (e) => this.handleFiles(e.target.files);
+
+                this.initWebGL();
+                requestAnimationFrame((t) => this.render(t));
+            }
+
+            getDist(t1, t2) { return Math.sqrt(Math.pow(t2.clientX - t1.clientX, 2) + Math.pow(t2.clientY - t1.clientY, 2)); }
+            getAngle(t1, t2) { return Math.atan2(t2.clientY - t1.clientY, t2.clientX - t1.clientX); }
+
+            async handleFiles(files) {
+                if (!this.audioCtx) {
+                    this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    this.analyser = this.audioCtx.createAnalyser();
+                    this.analyser.fftSize = 1024;
+                    this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+                }
+                for (let file of files) {
+                    const url = URL.createObjectURL(file);
+                    const audio = new Audio(url); audio.loop = true;
+                    const source = this.audioCtx.createMediaElementSource(audio);
+                    const gain = this.audioCtx.createGain(); gain.gain.value = 0;
+                    source.connect(gain); gain.connect(this.analyser); gain.connect(this.audioCtx.destination);
+                    this.tracks.push({ name: file.name, audio, gain });
+                }
+                this.setupSwitcher();
+                if (this.tracks.length > 0) this.switchTrack(0);
+            }
+
+            setupSwitcher() {
+                const s = document.getElementById('audio-switcher'); s.innerHTML = '';
+                this.tracks.forEach((t, i) => {
+                    const b = document.createElement('button');
+                    b.textContent = t.name.substring(0, 10);
+                    b.onclick = () => this.switchTrack(i);
+                    s.appendChild(b);
+                });
+            }
+
+            switchTrack(idx) {
+                if (this.audioCtx.state === 'suspended') this.audioCtx.resume();
+                this.tracks.forEach((t, i) => {
+                    t.gain.gain.setTargetAtTime(i === idx ? 1 : 0, this.audioCtx.currentTime, 0.5);
+                    if (i === idx) t.audio.play(); else t.audio.pause();
+                });
+                const btns = document.querySelectorAll('#audio-switcher button');
+                btns.forEach((b, i) => b.classList.toggle('active', i === idx));
+            }
+
+            initWebGL() {
+                const gl = this.gl;
+                const vs = `attribute vec2 position; void main() { gl_Position = vec4(position, 0.0, 1.0); }`;
+                const fs = document.getElementById('fs').textContent;
+                const create = (type, src) => {
+                    const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s;
+                };
+                const p = gl.createProgram();
+                gl.attachShader(p, create(gl.VERTEX_SHADER, vs));
+                gl.attachShader(p, create(gl.FRAGMENT_SHADER, fs));
+                gl.linkProgram(p); gl.useProgram(p);
+                this.uLocs = {
+                    time: gl.getUniformLocation(p, 'u_time'), resolution: gl.getUniformLocation(p, 'u_resolution'),
+                    bass: gl.getUniformLocation(p, 'u_bass'), mids: gl.getUniformLocation(p, 'u_mids'),
+                    highs: gl.getUniformLocation(p, 'u_highs'), glitch: gl.getUniformLocation(p, 'u_glitch'),
+                    touch_dist: gl.getUniformLocation(p, 'u_touch_dist'),
+                    touch_angle: gl.getUniformLocation(p, 'u_touch_angle')
+                };
+                const b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b);
+                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]), gl.STATIC_DRAW);
+                const pos = gl.getAttribLocation(p, 'position');
+                gl.enableVertexAttribArray(pos); gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+            }
+
+            resize() { 
+                const dpr = window.devicePixelRatio || 1;
+                this.canvas.width = window.innerWidth * dpr; this.canvas.height = window.innerHeight * dpr;
+                this.gl.viewport(0, 0, this.canvas.width, this.canvas.height); 
+                this.uniforms.resolution = [this.canvas.width, this.canvas.height]; 
+            }
+
+            render(t) {
+                this.uniforms.time = t * 0.001;
+                if (this.analyser) {
+                    this.analyser.getByteFrequencyData(this.dataArray);
+                    let b=0, m=0, h=0;
+                    for(let i=0; i<30; i++) b += this.dataArray[i];
+                    for(let i=30; i<250; i++) m += this.dataArray[i];
+                    for(let i=250; i<512; i++) h += this.dataArray[i];
+                    this.uniforms.bass = (b/30)/255; this.uniforms.mids = (m/220)/255; this.uniforms.highs = (h/262)/255;
+                    this.uniforms.glitch = Math.max(...this.dataArray.slice(300, 512))/255 > 0.8 ? 1.0 : this.uniforms.glitch * 0.95;
+                }
+                const gl = this.gl;
+                gl.uniform1f(this.uLocs.time, this.uniforms.time);
+                gl.uniform2f(this.uLocs.resolution, this.uniforms.resolution[0], this.uniforms.resolution[1]);
+                gl.uniform1f(this.uLocs.bass, this.uniforms.bass);
+                gl.uniform1f(this.uLocs.mids, this.uniforms.mids);
+                gl.uniform1f(this.uLocs.highs, this.uniforms.highs);
+                gl.uniform1f(this.uLocs.glitch, this.uniforms.glitch);
+                gl.uniform1f(this.uLocs.touch_dist, this.uniforms.touch_dist);
+                gl.uniform1f(this.uLocs.touch_angle, this.uniforms.touch_angle);
+                gl.drawArrays(gl.TRIANGLES, 0, 6);
+                requestAnimationFrame((t) => this.render(t));
+            }
+        }
+        new SmilezGermz();
+    </script>
+</body>
+</html>

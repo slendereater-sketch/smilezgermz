@@ -1,0 +1,174 @@
+:root {
+    --void: #05010a;
+    --plasma: #1a0233;
+    --neon-green: #39ff14;
+    --toxic-green: #76ff03;
+    --glass: rgba(10, 2, 20, 0.7);
+    --border: rgba(57, 255, 20, 0.3);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+body {
+    background: var(--void);
+    color: var(--neon-green);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+}
+
+#gl-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+#ui-layer {
+    position: relative;
+    z-index: 10;
+    height: 100%;
+    width: 100%;
+    pointer-events: none;
+}
+
+#center-trigger {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: auto;
+}
+
+#enter-store {
+    background: transparent;
+    border: 2px solid var(--neon-green);
+    color: var(--neon-green);
+    padding: 1rem 2rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1), background 0.3s;
+    text-shadow: 0 0 10px var(--neon-green);
+    box-shadow: 0 0 20px var(--border);
+    opacity: 0;
+    pointer-events: none;
+}
+
+#center-trigger:hover #enter-store {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#enter-store:hover {
+    background: var(--neon-green);
+    color: var(--void);
+}
+
+#audio-switcher {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 1rem;
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    border-top: 1px solid var(--border);
+    pointer-events: auto;
+}
+
+#audio-switcher button {
+    background: none;
+    border: none;
+    color: var(--neon-green);
+    opacity: 0.5;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+#audio-switcher button.active {
+    opacity: 1;
+    text-decoration: underline;
+    text-shadow: 0 0 5px var(--neon-green);
+}
+
+#store-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 20;
+    background: var(--glass);
+    backdrop-filter: blur(15px);
+    display: flex;
+    flex-direction: column;
+    padding: 4rem;
+    transition: opacity 0.4s ease;
+}
+
+#store-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#overlay-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4rem;
+    border-bottom: 1px solid var(--neon-green);
+    padding-bottom: 1rem;
+}
+
+#close-store {
+    background: none;
+    border: 1px solid var(--neon-green);
+    color: var(--neon-green);
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+
+#app-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    flex-grow: 1;
+}
+
+.app-card {
+    background: rgba(57, 255, 20, 0.05);
+    border: 1px solid var(--border);
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    transition: background 0.3s;
+    /* This will be scaled via JS: transform: scale(var(--pulse-bass)); */
+}
+
+.app-card:hover {
+    background: rgba(57, 255, 20, 0.15);
+    border-color: var(--neon-green);
+    cursor: pointer;
+}
+
+.hidden {
+    display: none !important;
+}
